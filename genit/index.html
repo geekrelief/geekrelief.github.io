@@ -106,8 +106,11 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference" id="rules-tuple-arguments_toc" href="#rules-tuple-arguments">Tuple Arguments</a></li>
 <li><a class="reference" id="rules-stringify_toc" href="#rules-stringify">Stringify</a></li>
 <li><a class="reference" id="rules-capitalize_toc" href="#rules-capitalize">Capitalize</a></li>
+<li><a class="reference" id="rules-expansion_toc" href="#rules-expansion">Expansion</a></li>
+<li><a class="reference" id="rules-multiple-statements-and-nesting_toc" href="#rules-multiple-statements-and-nesting">Multiple Statements and Nesting</a></li>
 <li><a class="reference" id="rules-special-constructs_toc" href="#rules-special-constructs">Special Constructs</a></li>
-<li><a class="reference" id="rules-enum_toc" href="#rules-enum">Enum</a></li>
+<li><a class="reference" id="rules-genwith-enum-or-object_toc" href="#rules-genwith-enum-or-object"><tt class="docutils literal"><span class="pre">genWith</span></tt> Enum or Object</a></li>
+<li><a class="reference" id="rules-debugging-with-print_toc" href="#rules-debugging-with-print">Debugging with <tt class="docutils literal"><span class="pre">print</span></tt></a></li>
 </ul><li>
   <a class="reference reference-toplevel" href="#17" id="67">Macros</a>
   <ul class="simple simple-toc-section">
@@ -119,6 +122,11 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">genWith
       <li><a class="reference" href="#genWith.m%2Ctyped%2Cuntyped"
     title="genWith(arg: typed; body: untyped): untyped">genWith(arg: typed; body: untyped): untyped</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">print
+      <li><a class="reference" href="#print.m%2Cuntyped"
+    title="print(body: untyped): untyped">print(body: untyped): untyped</a></li>
 
   </ul>
 
@@ -134,7 +142,7 @@ window.addEventListener('DOMContentLoaded', main);
   
   <p class="module-desc"><table class="docinfo" frame="void" rules="none"><col class="docinfo-name" /><col class="docinfo-content" /><tbody valign="top"><tr><th class="docinfo-name">Author:</th><td>Don-Duong Quach</td></tr>
 <tr><th class="docinfo-name">License:</th><td>MIT</td></tr>
-<tr><th class="docinfo-name">Version:</th><td>0.5.0</td></tr>
+<tr><th class="docinfo-name">Version:</th><td>0.6.0</td></tr>
 </tbody></table><p><a class="reference external" href="https://github.com/geekrelief/genit/">Source</a></p>
 <p>This module has a macro <tt class="docutils literal"><span class="pre">gen</span></tt> which implements a small DSL for inline code generation. <tt class="docutils literal"><span class="pre">gen</span></tt> acts like an anonymous, dirty, template/macro for generating lots of similar repetitive code.</p>
 <p>Arguments are subsituted into a body of code using the following rules.</p>
@@ -208,6 +216,43 @@ window.addEventListener('DOMContentLoaded', main);
 <span class="Identifier">doAssert</span> <span class="Identifier">Red</span> <span class="Operator">==</span> <span class="StringLit">&quot;red&quot;</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">Green</span> <span class="Operator">==</span> <span class="StringLit">&quot;green&quot;</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">Blue</span> <span class="Operator">==</span> <span class="StringLit">&quot;blue&quot;</span></pre>
+<h2><a class="toc-backref" id="rules-expansion" href="#rules-expansion">Expansion</a></h2><p>The <tt class="docutils literal"><span class="pre">~</span></tt> operator will expand an array, seq, or tuple.</p>
+
+<p><strong class="examples_text">Example:</strong></p>
+<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
+<span class="Keyword">type</span> <span class="Identifier">Color</span> <span class="Operator">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">none</span> <span class="Operator">=</span> <span class="DecNumber">0</span> 
+  <span class="Identifier">red</span> <span class="Operator">=</span> <span class="DecNumber">1</span>
+  <span class="Identifier">green</span> <span class="Operator">=</span> <span class="DecNumber">2</span>
+  <span class="Identifier">blue</span> <span class="Operator">=</span> <span class="DecNumber">3</span>
+
+<span class="Keyword">let</span> <span class="Identifier">color</span> <span class="Operator">=</span> <span class="Identifier">blue</span>
+
+<span class="Identifier">gen</span><span class="Punctuation">(</span><span class="Identifier">c</span> <span class="Operator">=</span> <span class="Punctuation">[</span><span class="Identifier">none</span><span class="Punctuation">,</span> <span class="Identifier">red</span><span class="Punctuation">,</span> <span class="Identifier">green</span><span class="Punctuation">,</span> <span class="Identifier">blue</span><span class="Punctuation">]</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+  <span class="Keyword">var</span> <span class="Identifier">varVal</span> <span class="Operator">=</span> <span class="Identifier">gen</span><span class="Punctuation">(</span><span class="Operator">~</span><span class="Identifier">c</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+    <span class="Keyword">case</span> <span class="Identifier">color</span><span class="Punctuation">:</span>
+      <span class="Keyword">of</span> <span class="Identifier">it</span><span class="Punctuation">:</span> <span class="Operator">%</span><span class="Identifier">it</span>
+
+  <span class="Keyword">let</span> <span class="Identifier">letVal</span> <span class="Operator">=</span> <span class="Identifier">gen</span><span class="Punctuation">(</span><span class="Operator">~</span><span class="Identifier">c</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+    <span class="Keyword">case</span> <span class="Identifier">varVal</span><span class="Punctuation">:</span>
+      <span class="Keyword">of</span> <span class="Operator">%</span><span class="Identifier">it</span><span class="Punctuation">:</span> <span class="Identifier">it</span>
+      <span class="Keyword">else</span><span class="Punctuation">:</span> <span class="Identifier">none</span> 
+
+<span class="Identifier">doAssert</span> <span class="Identifier">varVal</span> <span class="Operator">==</span> <span class="DecNumber">3</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">letVal</span> <span class="Operator">==</span> <span class="Identifier">blue</span></pre>
+<h2><a class="toc-backref" id="rules-multiple-statements-and-nesting" href="#rules-multiple-statements-and-nesting">Multiple Statements and Nesting</a></h2><p>When using multiple states in a gen macro, each statement will be produced at least once even if there are no arguments. And each statement will be produced once for each unnamed argument using the item identifier, unless its a special construct like a <tt class="docutils literal"><span class="pre">case</span></tt> statement or type definition. It's better to split the <tt class="docutils literal"><span class="pre">gen</span></tt> calls for clarity if possible.</p>
+
+<p><strong class="examples_text">Example:</strong></p>
+<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
+<span class="Identifier">gen</span><span class="Punctuation">(</span><span class="Identifier">c</span> <span class="Operator">=</span> <span class="Identifier">Component</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+  <span class="Identifier">gen</span><span class="Punctuation">(</span><span class="Identifier">red</span><span class="Punctuation">,</span> <span class="Identifier">green</span><span class="Punctuation">,</span> <span class="Identifier">blue</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+    <span class="Keyword">type</span>
+      <span class="Identifier">RGB</span> <span class="Operator">=</span> <span class="Keyword">object</span>
+        <span class="Punctuation">`</span><span class="Identifier">it</span> <span class="Identifier">c</span><span class="Punctuation">`</span><span class="Punctuation">:</span> <span class="Identifier">float</span>
+
+  <span class="Keyword">var</span> <span class="Identifier">color</span> <span class="Operator">=</span> <span class="Identifier">RGB</span><span class="Punctuation">(</span><span class="Punctuation">`</span><span class="Identifier">red</span> <span class="Identifier">c</span><span class="Punctuation">`</span><span class="Punctuation">:</span><span class="FloatNumber">1.0</span><span class="Punctuation">,</span> <span class="Punctuation">`</span><span class="Identifier">green</span> <span class="Identifier">c</span><span class="Punctuation">`</span><span class="Punctuation">:</span><span class="FloatNumber">0.0</span><span class="Punctuation">,</span> <span class="Punctuation">`</span><span class="Identifier">blue</span> <span class="Identifier">c</span><span class="Punctuation">`</span><span class="Punctuation">:</span><span class="FloatNumber">1.0</span><span class="Punctuation">)</span>
+
+<span class="Identifier">doAssert</span> <span class="Identifier">color</span><span class="Operator">.</span><span class="Identifier">redComponent</span> <span class="Operator">==</span> <span class="DecNumber">1</span></pre>
 <h2><a class="toc-backref" id="rules-special-constructs" href="#rules-special-constructs">Special Constructs</a></h2><p>Some Nim constructs like <tt class="docutils literal"><span class="pre">case</span></tt> statements and type definitions: <tt class="docutils literal"><span class="pre">objects</span></tt>, <tt class="docutils literal"><span class="pre">enum</span></tt>, <tt class="docutils literal"><span class="pre">tuple</span></tt>, etc. need special handling. Some might not be implemented currently.</p>
 
 <p><strong class="examples_text">Example:</strong></p>
@@ -234,28 +279,58 @@ window.addEventListener('DOMContentLoaded', main);
 <span class="Keyword">var</span> <span class="Identifier">index1</span> <span class="Operator">=</span> <span class="Identifier">getColor</span><span class="Punctuation">(</span><span class="Identifier">color1</span><span class="Punctuation">)</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">index1</span> <span class="Operator">==</span> <span class="Punctuation">(</span><span class="DecNumber">0</span><span class="Punctuation">,</span> <span class="DecNumber">255</span><span class="Punctuation">,</span> <span class="DecNumber">0</span><span class="Punctuation">)</span>
 
-<span class="Identifier">gen</span><span class="Punctuation">(</span><span class="Identifier">c</span> <span class="Operator">=</span> <span class="Identifier">Component</span><span class="Punctuation">,</span> <span class="Identifier">red</span><span class="Punctuation">,</span> <span class="Identifier">green</span><span class="Punctuation">,</span> <span class="Identifier">blue</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
-  <span class="Keyword">type</span>
-    <span class="Identifier">RGB</span> <span class="Operator">=</span> <span class="Keyword">object</span>
-      <span class="Punctuation">`</span><span class="Identifier">it</span> <span class="Identifier">c</span><span class="Punctuation">`</span><span class="Punctuation">:</span> <span class="Identifier">float</span>
+<span class="Identifier">gen</span><span class="Punctuation">(</span><span class="Identifier">c</span> <span class="Operator">=</span> <span class="Identifier">Component</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+  <span class="Identifier">gen</span><span class="Punctuation">(</span><span class="Identifier">red</span><span class="Punctuation">,</span> <span class="Identifier">green</span><span class="Punctuation">,</span> <span class="Identifier">blue</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+    <span class="Keyword">type</span>
+      <span class="Identifier">RGB</span> <span class="Operator">=</span> <span class="Keyword">object</span>
+        <span class="Punctuation">`</span><span class="Identifier">it</span> <span class="Identifier">c</span><span class="Punctuation">`</span><span class="Punctuation">:</span> <span class="Identifier">float</span>
 
   <span class="Keyword">var</span> <span class="Identifier">color</span> <span class="Operator">=</span> <span class="Identifier">RGB</span><span class="Punctuation">(</span><span class="Punctuation">`</span><span class="Identifier">red</span> <span class="Identifier">c</span><span class="Punctuation">`</span><span class="Punctuation">:</span><span class="FloatNumber">1.0</span><span class="Punctuation">,</span> <span class="Punctuation">`</span><span class="Identifier">green</span> <span class="Identifier">c</span><span class="Punctuation">`</span><span class="Punctuation">:</span><span class="FloatNumber">0.0</span><span class="Punctuation">,</span> <span class="Punctuation">`</span><span class="Identifier">blue</span> <span class="Identifier">c</span><span class="Punctuation">`</span><span class="Punctuation">:</span><span class="FloatNumber">1.0</span><span class="Punctuation">)</span>
 
 <span class="Identifier">doAssert</span> <span class="Identifier">color</span><span class="Operator">.</span><span class="Identifier">redComponent</span> <span class="Operator">==</span> <span class="DecNumber">1</span></pre>
-<h2><a class="toc-backref" id="rules-enum" href="#rules-enum">Enum</a></h2><p>Iteration over enums can be done with <tt class="docutils literal"><span class="pre">genWith</span></tt>.</p>
+<h2><a class="toc-backref" id="rules-genwith-enum-or-object" href="#rules-genwith-enum-or-object"><tt class="docutils literal"><span class="pre">genWith</span></tt> Enum or Object</a></h2><p>Iteration over enum and object fields can be done with <tt class="docutils literal"><span class="pre">genWith</span></tt>.</p>
 
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
-<span class="Keyword">type</span> <span class="Identifier">NumberColor</span> <span class="Operator">=</span> <span class="Keyword">enum</span>
+<span class="Keyword">type</span> <span class="Identifier">ColorIndex</span> <span class="Operator">=</span> <span class="Keyword">enum</span>
   <span class="Identifier">none</span> <span class="Operator">=</span> <span class="Operator">-</span><span class="DecNumber">1</span>
   <span class="Identifier">red</span> <span class="Operator">=</span> <span class="DecNumber">1</span>
   <span class="Identifier">green</span> <span class="Operator">=</span> <span class="DecNumber">2</span>
   <span class="Identifier">blue</span> <span class="Operator">=</span> <span class="DecNumber">3</span>
 
-<span class="Identifier">genWith</span> <span class="Identifier">NumberColor</span><span class="Punctuation">:</span>
+<span class="Identifier">genWith</span> <span class="Identifier">ColorIndex</span><span class="Punctuation">:</span>
   <span class="Keyword">var</span> <span class="Punctuation">`</span><span class="Operator">^</span><span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">0</span><span class="Punctuation">]</span><span class="Punctuation">`</span> <span class="Operator">=</span> <span class="Punctuation">(</span><span class="Operator">$$</span><span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">0</span><span class="Punctuation">]</span><span class="Punctuation">,</span> <span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">1</span><span class="Punctuation">]</span><span class="Punctuation">)</span>
 
-<span class="Identifier">doAssert</span> <span class="Identifier">Red</span> <span class="Operator">==</span> <span class="Punctuation">(</span><span class="StringLit">&quot;red&quot;</span><span class="Punctuation">,</span> <span class="DecNumber">1</span><span class="Punctuation">)</span></pre></p>
+<span class="Identifier">doAssert</span> <span class="Identifier">None</span> <span class="Operator">==</span> <span class="Punctuation">(</span><span class="StringLit">&quot;none&quot;</span><span class="Punctuation">,</span> <span class="Operator">-</span><span class="DecNumber">1</span><span class="Punctuation">)</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">Red</span> <span class="Operator">==</span> <span class="Punctuation">(</span><span class="StringLit">&quot;red&quot;</span><span class="Punctuation">,</span> <span class="DecNumber">1</span><span class="Punctuation">)</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">Green</span> <span class="Operator">==</span> <span class="Punctuation">(</span><span class="StringLit">&quot;green&quot;</span><span class="Punctuation">,</span> <span class="DecNumber">2</span><span class="Punctuation">)</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">Blue</span> <span class="Operator">==</span> <span class="Punctuation">(</span><span class="StringLit">&quot;blue&quot;</span><span class="Punctuation">,</span> <span class="DecNumber">3</span><span class="Punctuation">)</span>
+
+<span class="Keyword">type</span> <span class="Identifier">Color</span> <span class="Operator">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">r</span><span class="Punctuation">,</span> <span class="Identifier">g</span><span class="Punctuation">,</span> <span class="Identifier">b</span><span class="Punctuation">:</span> <span class="Identifier">uint8</span>
+
+<span class="Keyword">var</span> <span class="Identifier">c</span><span class="Punctuation">:</span> <span class="Identifier">Color</span>
+
+<span class="Identifier">genWith</span> <span class="Identifier">Color</span><span class="Punctuation">:</span>
+  <span class="Identifier">c</span><span class="Operator">.</span><span class="Identifier">it</span> <span class="Operator">=</span> <span class="DecNumber">255'</span><span class="Identifier">u8</span>
+
+<span class="Identifier">doAssert</span> <span class="Identifier">c</span><span class="Operator">.</span><span class="Identifier">r</span> <span class="Operator">==</span> <span class="DecNumber">255'</span><span class="Identifier">u8</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">c</span><span class="Operator">.</span><span class="Identifier">g</span> <span class="Operator">==</span> <span class="DecNumber">255'</span><span class="Identifier">u8</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">c</span><span class="Operator">.</span><span class="Identifier">b</span> <span class="Operator">==</span> <span class="DecNumber">255'</span><span class="Identifier">u8</span></pre>
+<h2><a class="toc-backref" id="rules-debugging-with-print" href="#rules-debugging-with-print">Debugging with <tt class="docutils literal"><span class="pre">print</span></tt></a></h2><p>To see what <tt class="docutils literal"><span class="pre">gen</span></tt> produces, wrap it with the <tt class="docutils literal"><span class="pre">print</span></tt> macro.</p>
+
+<p><strong class="examples_text">Example:</strong></p>
+<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
+<span class="Keyword">var</span> <span class="Identifier">sum</span> <span class="Operator">=</span> <span class="DecNumber">0</span>
+<span class="Identifier">print</span><span class="Punctuation">:</span>
+  <span class="Identifier">gen</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">,</span> <span class="DecNumber">2</span><span class="Punctuation">,</span> <span class="DecNumber">3</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+    <span class="Identifier">sum</span> <span class="Operator">+=</span> <span class="Identifier">it</span>
+  
+<span class="Identifier">doAssert</span> <span class="Identifier">sum</span> <span class="Operator">==</span> <span class="DecNumber">6</span>
+
+<span class="Identifier">gen</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">,</span> <span class="DecNumber">2</span><span class="Punctuation">,</span> <span class="DecNumber">3</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+  <span class="Identifier">sum</span> <span class="Operator">+=</span> <span class="Identifier">it</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">sum</span> <span class="Operator">==</span> <span class="DecNumber">12</span></pre></p>
   <div class="section" id="17">
 <h1><a class="toc-backref" href="#17">Macros</a></h1>
 <dl class="item">
@@ -265,7 +340,7 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><pre><span class="Keyword">macro</span> <a href="#gen.m%2Cvarargs%5Buntyped%5D"><span class="Identifier">gen</span></a><span class="Other">(</span><span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">untyped</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
-Implements the DSL
+Implements the DSL.
 
 </dd>
 </div>
@@ -277,7 +352,19 @@ Implements the DSL
 <dt><pre><span class="Keyword">macro</span> <a href="#genWith.m%2Ctyped%2Cuntyped"><span class="Identifier">genWith</span></a><span class="Other">(</span><span class="Identifier">arg</span><span class="Other">:</span> <span class="Identifier">typed</span><span class="Other">;</span> <span class="Identifier">body</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
-Unwraps the enum fields in <tt class="docutils literal"><span class="pre">arg</span></tt> and passes the values to <tt class="docutils literal"><span class="pre">gen</span></tt>. TODO?: handle object/instance fields
+Calls <tt class="docutils literal"><span class="pre">gen</span></tt> with the fields of the enum or object type passed.
+
+</dd>
+</div>
+
+</div>
+
+<div id="print-macros-all">
+<div id="print.m,untyped">
+<dt><pre><span class="Keyword">macro</span> <a href="#print.m%2Cuntyped"><span class="Identifier">print</span></a><span class="Other">(</span><span class="Identifier">body</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+This will print out what <tt class="docutils literal"><span class="pre"><span class="Identifier">gen</span></span></tt> produces for debugging purposes. Wrap the <tt class="docutils literal"><span class="pre">gen</span></tt> call with print.
 
 </dd>
 </div>
@@ -293,7 +380,7 @@ Unwraps the enum fields in <tt class="docutils literal"><span class="pre">arg</s
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2021-12-06 19:52:52 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-01-05 03:01:04 UTC</small>
       </div>
     </div>
   </div>
