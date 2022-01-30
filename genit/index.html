@@ -148,7 +148,7 @@ window.addEventListener('DOMContentLoaded', main);
   
   <p class="module-desc"><table class="docinfo" frame="void" rules="none"><col class="docinfo-name" /><col class="docinfo-content" /><tbody valign="top"><tr><th class="docinfo-name">Author:</th><td>Don-Duong Quach</td></tr>
 <tr><th class="docinfo-name">License:</th><td>MIT</td></tr>
-<tr><th class="docinfo-name">Version:</th><td>0.10.0</td></tr>
+<tr><th class="docinfo-name">Version:</th><td>0.11.0</td></tr>
 </tbody></table><p><a class="reference external" href="https://github.com/geekrelief/genit/">Source</a></p>
 <p>This module has a macro <tt class="docutils literal"><span class="pre">gen</span></tt> which implements a small DSL for inline code generation. <tt class="docutils literal"><span class="pre">gen</span></tt> acts like an anonymous, dirty, template/macro for generating lots of similar repetitive code.</p>
 <p>Arguments are subsituted into a body of code using the following rules.</p>
@@ -218,8 +218,8 @@ doAssert dComp == 3
 <span class="Identifier">doAssert</span> <span class="Identifier">a</span> <span class="Operator">==</span> <span class="DecNumber">1</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">b</span> <span class="Operator">==</span> <span class="DecNumber">1</span></pre>
 <h2><a class="toc-backref" id="rules-tuple-arguments" href="#rules-tuple-arguments">Tuple Arguments</a></h2><p>Each unnamed argument can be a tuple, and its parts can be accessed by indexing like a regular tuple. If the indexed tuple is an l-value, it must be surrounded by accent quotes to be legal Nim.</p>
-<p>If an unnnamed argument is indexed, it will be &quot;duplicated&quot;, so you can mix tuple and non-tuple arguments.</p>
-<p>If the tuple index is part of a larger expression, e.g. dot expression, accent quoting will run genit's parser on it.</p>
+<p>If an unnnamed argument is indexed but it is not a tuple, it will be &quot;duplicated&quot;, so you can mix tuple and non-tuple arguments.</p>
+<p>If the tuple index is part of a larger expression, e.g. dot expression, accent quoting will run genit's parser on it. Accent quoting will also interrupt multiple indexing.</p>
 
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
@@ -246,7 +246,24 @@ doAssert dComp == 3
   <span class="Keyword">let</span> <span class="Punctuation">`</span><span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">0</span><span class="Punctuation">]</span><span class="Punctuation">`</span> <span class="Operator">=</span> <span class="Identifier">s</span><span class="Operator">.</span><span class="Punctuation">`</span><span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">1</span><span class="Punctuation">]</span><span class="Punctuation">`</span> <span class="Comment"># accent quote it[1] to bypass nim parsing</span>
 
 <span class="Identifier">doAssert</span> <span class="Identifier">val</span> <span class="Operator">==</span> <span class="DecNumber">10</span>
-<span class="Identifier">doAssert</span> <span class="Identifier">bar</span> <span class="Operator">==</span> <span class="DecNumber">100</span></pre>
+<span class="Identifier">doAssert</span> <span class="Identifier">bar</span> <span class="Operator">==</span> <span class="DecNumber">100</span>
+
+<span class="Comment"># multiple tuple indexing with duplication</span>
+<span class="Keyword">var</span> <span class="Identifier">a</span> <span class="Operator">=</span> <span class="Punctuation">[</span><span class="DecNumber">1</span><span class="Punctuation">,</span> <span class="DecNumber">2</span><span class="Punctuation">,</span> <span class="DecNumber">3</span><span class="Punctuation">]</span>
+<span class="Keyword">var</span> <span class="Identifier">b</span> <span class="Operator">=</span> <span class="Punctuation">[</span><span class="CharLit">'a'</span><span class="Punctuation">,</span> <span class="CharLit">'b'</span><span class="Punctuation">,</span> <span class="CharLit">'c'</span><span class="Punctuation">]</span>
+
+<span class="Identifier">gen</span> <span class="Punctuation">(</span><span class="Identifier">ap</span><span class="Punctuation">,</span> <span class="Identifier">a</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">b</span><span class="Punctuation">:</span>
+  <span class="Keyword">let</span> <span class="Punctuation">`</span><span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">0</span><span class="Punctuation">]</span> <span class="Identifier">t</span><span class="Punctuation">`</span> <span class="Operator">=</span> <span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">1</span><span class="Punctuation">]</span><span class="Punctuation">[</span><span class="DecNumber">0</span><span class="Punctuation">]</span><span class="Operator">.</span><span class="Keyword">addr</span>
+
+<span class="Identifier">doAssert</span> <span class="Identifier">apt</span><span class="Punctuation">[</span><span class="Punctuation">]</span> <span class="Operator">==</span> <span class="Identifier">a</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">bt</span><span class="Punctuation">[</span><span class="Punctuation">]</span> <span class="Operator">==</span> <span class="Identifier">b</span>
+
+<span class="Comment"># interrupt tuple indexing</span>
+<span class="Identifier">gen</span> <span class="Punctuation">(</span><span class="Identifier">ap</span><span class="Punctuation">,</span> <span class="Identifier">a</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">b</span><span class="Punctuation">:</span>
+  <span class="Keyword">let</span> <span class="Punctuation">`</span><span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">0</span><span class="Punctuation">]</span> <span class="Identifier">p</span><span class="Punctuation">`</span> <span class="Operator">=</span> <span class="Punctuation">`</span><span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">1</span><span class="Punctuation">]</span><span class="Punctuation">`</span><span class="Punctuation">[</span><span class="DecNumber">0</span><span class="Punctuation">]</span><span class="Operator">.</span><span class="Keyword">addr</span>
+
+<span class="Identifier">doAssert</span> <span class="Identifier">app</span><span class="Punctuation">[</span><span class="Punctuation">]</span> <span class="Operator">==</span> <span class="DecNumber">1</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">bp</span><span class="Punctuation">[</span><span class="Punctuation">]</span> <span class="Operator">==</span> <span class="CharLit">'a'</span></pre>
 <h2><a class="toc-backref" id="rules-stringify" href="#rules-stringify">Stringify</a></h2><p>The <tt class="docutils literal"><span class="pre">$$</span></tt>, stringify, operator turns an identifier into a string.</p>
 
 <p><strong class="examples_text">Example:</strong></p>
@@ -463,7 +480,7 @@ This will print out what <tt class="docutils literal"><span class="pre"><span cl
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-01-23 21:03:04 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-01-30 21:17:44 UTC</small>
       </div>
     </div>
   </div>
