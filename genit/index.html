@@ -148,7 +148,7 @@ window.addEventListener('DOMContentLoaded', main);
   
   <p class="module-desc"><table class="docinfo" frame="void" rules="none"><col class="docinfo-name" /><col class="docinfo-content" /><tbody valign="top"><tr><th class="docinfo-name">Author:</th><td>Don-Duong Quach</td></tr>
 <tr><th class="docinfo-name">License:</th><td>MIT</td></tr>
-<tr><th class="docinfo-name">Version:</th><td>0.11.2</td></tr>
+<tr><th class="docinfo-name">Version:</th><td>0.11.3</td></tr>
 </tbody></table><p><a class="reference external" href="https://github.com/geekrelief/genit/">Source</a></p>
 <p>This module has a macro <tt class="docutils literal"><span class="pre">gen</span></tt> which implements a small DSL for inline code generation. <tt class="docutils literal"><span class="pre">gen</span></tt> acts like an anonymous, dirty, template/macro for generating lots of similar repetitive code.</p>
 <p>Arguments are subsituted into a body of code using the following rules.</p>
@@ -166,9 +166,10 @@ window.addEventListener('DOMContentLoaded', main);
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
 <span class="Identifier">gen</span> <span class="Identifier">red</span><span class="Punctuation">,</span> <span class="Identifier">green</span><span class="Punctuation">,</span> <span class="Identifier">blue</span><span class="Punctuation">:</span> <span class="Comment"># produces:</span>
-  <span class="Keyword">var</span> <span class="Punctuation">`</span><span class="Identifier">it</span> <span class="Identifier">Val</span><span class="Punctuation">`</span><span class="Punctuation">:</span> <span class="Identifier">int</span>   <span class="Comment"># var redVal: int</span>
-                      <span class="Comment"># var greenVal: int</span>
-                      <span class="Comment"># var blueVal: int</span>
+  <span class="Keyword">var</span> <span class="Punctuation">`</span><span class="Identifier">it</span> <span class="Identifier">Val</span><span class="Punctuation">`</span><span class="Punctuation">:</span> <span class="Identifier">int</span>   <span class="Comment"># var </span>
+                      <span class="Comment">#   redVal: int</span>
+                      <span class="Comment">#   greenVal: int</span>
+                      <span class="Comment">#   blueVal: int</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">typeof</span><span class="Punctuation">(</span><span class="Identifier">redVal</span><span class="Punctuation">)</span> <span class="Keyword">is</span> <span class="Identifier">int</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">typeof</span><span class="Punctuation">(</span><span class="Identifier">greenVal</span><span class="Punctuation">)</span> <span class="Keyword">is</span> <span class="Identifier">int</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">typeof</span><span class="Punctuation">(</span><span class="Identifier">blueVal</span><span class="Punctuation">)</span> <span class="Keyword">is</span> <span class="Identifier">int</span></pre>
@@ -202,9 +203,10 @@ doAssert dComp == 3
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
 <span class="Identifier">gen</span> <span class="Identifier">red</span><span class="Punctuation">,</span> <span class="Identifier">green</span><span class="Punctuation">,</span> <span class="Identifier">blue</span><span class="Punctuation">:</span> <span class="Comment"># produces</span>
-  <span class="Keyword">var</span> <span class="Identifier">it</span> <span class="Operator">=</span> <span class="Operator">%</span><span class="Identifier">it</span>        <span class="Comment"># var red = 0</span>
-                      <span class="Comment"># var green = 1</span>
-                      <span class="Comment"># var bluel = 2</span>
+  <span class="Keyword">var</span> <span class="Identifier">it</span> <span class="Operator">=</span> <span class="Operator">%</span><span class="Identifier">it</span>        <span class="Comment"># var </span>
+                      <span class="Comment">#   red = 0</span>
+                      <span class="Comment">#   green = 1</span>
+                      <span class="Comment">#   bluel = 2</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">red</span> <span class="Operator">==</span> <span class="DecNumber">0</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">green</span> <span class="Operator">==</span> <span class="DecNumber">1</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">blue</span> <span class="Operator">==</span> <span class="DecNumber">2</span></pre>
@@ -213,20 +215,22 @@ doAssert dComp == 3
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
 <span class="Identifier">gen</span><span class="Punctuation">(</span><span class="Identifier">it</span> <span class="Operator">=</span> <span class="Identifier">this</span><span class="Punctuation">,</span> <span class="Identifier">a</span><span class="Punctuation">,</span> <span class="Identifier">b</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Comment"># produces:</span>
-  <span class="Keyword">var</span> <span class="Identifier">this</span> <span class="Operator">=</span> <span class="DecNumber">1</span>        <span class="Comment"># var a = 1</span>
-                      <span class="Comment"># var b = 1</span>
+  <span class="Keyword">var</span> <span class="Identifier">this</span> <span class="Operator">=</span> <span class="DecNumber">1</span>        <span class="Comment"># var </span>
+                      <span class="Comment">#   a = 1</span>
+                      <span class="Comment">#   b = 1</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">a</span> <span class="Operator">==</span> <span class="DecNumber">1</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">b</span> <span class="Operator">==</span> <span class="DecNumber">1</span></pre>
 <h2><a class="toc-backref" id="rules-tuple-arguments" href="#rules-tuple-arguments">Tuple Arguments</a></h2><p>Each unnamed argument can be a tuple, and its parts can be accessed by indexing like a regular tuple. If the indexed tuple is an l-value, it must be surrounded by accent quotes to be legal Nim.</p>
 <p>If an unnnamed argument is indexed but it is not a tuple, it will be &quot;duplicated&quot;, so you can mix tuple and non-tuple arguments.</p>
-<p>If the tuple index is part of a larger expression, e.g. dot expression, accent quoting will run genit's parser on it. Accent quoting will also interrupt multiple indexing.</p>
+<p>If the tuple index is part of a larger expression, e.g. dot expression, accent quoting will run genit's parser on it.  Accent quoting will also interrupt multiple indexing.</p>
 
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
 <span class="Identifier">gen</span> <span class="Punctuation">(</span><span class="Identifier">first</span><span class="Punctuation">,</span> <span class="DecNumber">1</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Punctuation">(</span><span class="Identifier">second</span><span class="Punctuation">,</span> <span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Punctuation">(</span><span class="Identifier">third</span><span class="Punctuation">,</span> <span class="DecNumber">3</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Comment"># produces:</span>
-  <span class="Keyword">var</span> <span class="Punctuation">`</span><span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">0</span><span class="Punctuation">]</span><span class="Punctuation">`</span> <span class="Operator">=</span> <span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">1</span><span class="Punctuation">]</span>                    <span class="Comment"># var first = 1</span>
-                                         <span class="Comment"># var second = 2</span>
-                                         <span class="Comment"># var third = 3</span>
+  <span class="Keyword">var</span> <span class="Punctuation">`</span><span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">0</span><span class="Punctuation">]</span><span class="Punctuation">`</span> <span class="Operator">=</span> <span class="Identifier">it</span><span class="Punctuation">[</span><span class="DecNumber">1</span><span class="Punctuation">]</span>                    <span class="Comment"># var </span>
+                                         <span class="Comment">#   first = 1</span>
+                                         <span class="Comment">#   second = 2</span>
+                                         <span class="Comment">#   third = 3</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">first</span> <span class="Operator">==</span> <span class="DecNumber">1</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">second</span> <span class="Operator">==</span> <span class="DecNumber">2</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">third</span> <span class="Operator">==</span> <span class="DecNumber">3</span>
@@ -269,8 +273,9 @@ doAssert dComp == 3
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
 <span class="Identifier">gen</span><span class="Punctuation">(</span><span class="Identifier">l</span> <span class="Operator">=</span> <span class="Identifier">Label</span><span class="Punctuation">,</span> <span class="Identifier">name</span><span class="Punctuation">,</span> <span class="Identifier">age</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Comment"># produces</span>
-  <span class="Keyword">var</span> <span class="Punctuation">`</span><span class="Identifier">it</span> <span class="Identifier">l</span><span class="Punctuation">`</span> <span class="Operator">=</span> <span class="Operator">$$</span><span class="Identifier">it</span> <span class="Operator">&amp;</span> <span class="Operator">$$</span><span class="Identifier">l</span>  <span class="Comment"># var nameLabel = &quot;nameLabel&quot;</span>
-                           <span class="Comment"># var ageLabel = &quot;ageLabel&quot;</span>
+  <span class="Keyword">var</span> <span class="Punctuation">`</span><span class="Identifier">it</span> <span class="Identifier">l</span><span class="Punctuation">`</span> <span class="Operator">=</span> <span class="Operator">$$</span><span class="Identifier">it</span> <span class="Operator">&amp;</span> <span class="Operator">$$</span><span class="Identifier">l</span>  <span class="Comment"># var </span>
+                           <span class="Comment">#   nameLabel = &quot;nameLabel&quot;</span>
+                           <span class="Comment">#   ageLabel = &quot;ageLabel&quot;</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">nameLabel</span> <span class="Operator">==</span> <span class="StringLit">&quot;nameLabel&quot;</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">ageLabel</span> <span class="Operator">==</span> <span class="StringLit">&quot;ageLabel&quot;</span></pre>
 <h2><a class="toc-backref" id="rules-capitalize" href="#rules-capitalize">Capitalize</a></h2><p>The <tt class="docutils literal"><span class="pre">^</span></tt> operator will capitalize the first letter of an identifier.</p>
@@ -357,7 +362,7 @@ doAssert dComp == 3
 
 <span class="Identifier">doAssert</span> <span class="Identifier">res</span><span class="Operator">.</span><span class="Identifier">x</span> <span class="Operator">==</span> <span class="DecNumber">1</span><span class="Identifier">f</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">res</span><span class="Operator">.</span><span class="Identifier">z</span> <span class="Operator">==</span> <span class="DecNumber">3</span><span class="Identifier">f</span></pre>
-<h2><a class="toc-backref" id="rules-multiple-statements-and-nesting" href="#rules-multiple-statements-and-nesting">Multiple Statements and Nesting</a></h2><p>When using multiple states in a gen macro, each statement will be produced at least once even if there are no arguments. And each statement will be produced once for each unnamed argument using the item identifier, unless its a special construct like a <tt class="docutils literal"><span class="pre">case</span></tt> statement or type definition. It's better to split the <tt class="docutils literal"><span class="pre">gen</span></tt> calls for clarity if possible.</p>
+<h2><a class="toc-backref" id="rules-multiple-statements-and-nesting" href="#rules-multiple-statements-and-nesting">Multiple Statements and Nesting</a></h2><p>When using multiple statements in a gen macro, each statement will be produced at least once even if there are no arguments. And each statement will be produced once for each unnamed argument using the item identifier, unless its a special construct like a <tt class="docutils literal"><span class="pre">case</span></tt> statement or type definition. It's better to split the <tt class="docutils literal"><span class="pre">gen</span></tt> calls for clarity if possible.</p>
 
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
@@ -480,7 +485,7 @@ This will print out what <tt class="docutils literal"><span class="pre"><span cl
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-01-31 01:09:03 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-01-31 21:49:45 UTC</small>
       </div>
     </div>
   </div>
