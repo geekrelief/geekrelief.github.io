@@ -148,7 +148,7 @@ window.addEventListener('DOMContentLoaded', main);
   
   <p class="module-desc"><table class="docinfo" frame="void" rules="none"><col class="docinfo-name" /><col class="docinfo-content" /><tbody valign="top"><tr><th class="docinfo-name">Author:</th><td>Don-Duong Quach</td></tr>
 <tr><th class="docinfo-name">License:</th><td>MIT</td></tr>
-<tr><th class="docinfo-name">Version:</th><td>0.11.3</td></tr>
+<tr><th class="docinfo-name">Version:</th><td>0.12</td></tr>
 </tbody></table><p><a class="reference external" href="https://github.com/geekrelief/genit/">Source</a></p>
 <p>This module has a macro <tt class="docutils literal"><span class="pre">gen</span></tt> which implements a small DSL for inline code generation. <tt class="docutils literal"><span class="pre">gen</span></tt> acts like an anonymous, dirty, template/macro for generating lots of similar repetitive code.</p>
 <p>Arguments are subsituted into a body of code using the following rules.</p>
@@ -312,7 +312,7 @@ doAssert dComp == 3
 
 <span class="Identifier">doAssert</span> <span class="Identifier">varVal</span> <span class="Operator">==</span> <span class="DecNumber">3</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">letVal</span> <span class="Operator">==</span> <span class="Identifier">blue</span></pre>
-<h2><a class="toc-backref" id="rules-type-fields" href="#rules-type-fields">Type Fields</a></h2><p>Passing in a type or symbol prefixed with the fields operator, <tt class="docutils literal"><span class="pre">+</span></tt>, will pass in the type's fields as unnamed items. Internally this uses <tt class="docutils literal"><span class="pre">genWith</span></tt> and only supports Enum, Object, and Tuple types.</p>
+<h2><a class="toc-backref" id="rules-type-fields" href="#rules-type-fields">Type Fields</a></h2><p>Passing in a type or symbol prefixed with the fields operator, <tt class="docutils literal"><span class="pre">+</span></tt>, will pass in the type's fields as unnamed items. Internally this uses <tt class="docutils literal"><span class="pre">genWith</span></tt> and supports Enum, Object, Tuple, Array, and Range types.</p>
 
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
@@ -361,7 +361,17 @@ doAssert dComp == 3
   <span class="Identifier">res</span><span class="Operator">.</span><span class="Identifier">it</span> <span class="Operator">=</span> <span class="Identifier">r</span><span class="Operator">.</span><span class="Identifier">it</span>
 
 <span class="Identifier">doAssert</span> <span class="Identifier">res</span><span class="Operator">.</span><span class="Identifier">x</span> <span class="Operator">==</span> <span class="DecNumber">1</span><span class="Identifier">f</span>
-<span class="Identifier">doAssert</span> <span class="Identifier">res</span><span class="Operator">.</span><span class="Identifier">z</span> <span class="Operator">==</span> <span class="DecNumber">3</span><span class="Identifier">f</span></pre>
+<span class="Identifier">doAssert</span> <span class="Identifier">res</span><span class="Operator">.</span><span class="Identifier">z</span> <span class="Operator">==</span> <span class="DecNumber">3</span><span class="Identifier">f</span>
+
+<span class="Keyword">var</span> <span class="Identifier">v4</span><span class="Punctuation">:</span><span class="Identifier">array</span><span class="Punctuation">[</span><span class="DecNumber">4</span><span class="Punctuation">,</span> <span class="Identifier">float32</span><span class="Punctuation">]</span> <span class="Operator">=</span> <span class="Punctuation">[</span><span class="FloatNumber">1'f32</span><span class="Punctuation">,</span> <span class="FloatNumber">0.5</span><span class="Punctuation">,</span> <span class="FloatNumber">0.25</span><span class="Punctuation">,</span> <span class="DecNumber">1</span><span class="Punctuation">]</span>
+<span class="Keyword">var</span> <span class="Identifier">v3</span><span class="Punctuation">:</span><span class="Identifier">array</span><span class="Punctuation">[</span><span class="FloatNumber">1.</span><span class="Operator">.</span><span class="DecNumber">3</span><span class="Punctuation">,</span> <span class="Identifier">byte</span><span class="Punctuation">]</span>
+
+<span class="Identifier">gen</span> <span class="Operator">+</span><span class="Identifier">v3</span><span class="Punctuation">:</span>
+  <span class="Identifier">v3</span><span class="Punctuation">[</span><span class="Identifier">it</span><span class="Punctuation">]</span> <span class="Operator">=</span> <span class="Punctuation">(</span><span class="Identifier">v4</span><span class="Punctuation">[</span><span class="Identifier">it</span> <span class="Operator">-</span> <span class="DecNumber">1</span><span class="Punctuation">]</span> <span class="Operator">*</span> <span class="FloatNumber">255.99</span><span class="Identifier">f</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">byte</span>
+
+<span class="Identifier">doAssert</span> <span class="Identifier">v3</span><span class="Punctuation">[</span><span class="DecNumber">1</span><span class="Punctuation">]</span> <span class="Operator">==</span> <span class="DecNumber">255</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">v3</span><span class="Punctuation">[</span><span class="DecNumber">2</span><span class="Punctuation">]</span> <span class="Operator">==</span> <span class="DecNumber">127</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">v3</span><span class="Punctuation">[</span><span class="DecNumber">3</span><span class="Punctuation">]</span> <span class="Operator">==</span> <span class="DecNumber">63</span></pre>
 <h2><a class="toc-backref" id="rules-multiple-statements-and-nesting" href="#rules-multiple-statements-and-nesting">Multiple Statements and Nesting</a></h2><p>When using multiple statements in a gen macro, each statement will be produced at least once even if there are no arguments. And each statement will be produced once for each unnamed argument using the item identifier, unless its a special construct like a <tt class="docutils literal"><span class="pre">case</span></tt> statement or type definition. It's better to split the <tt class="docutils literal"><span class="pre">gen</span></tt> calls for clarity if possible.</p>
 
 <p><strong class="examples_text">Example:</strong></p>
@@ -485,7 +495,7 @@ This will print out what <tt class="docutils literal"><span class="pre"><span cl
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-01-31 21:49:45 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-02 23:58:43 UTC</small>
       </div>
     </div>
   </div>
