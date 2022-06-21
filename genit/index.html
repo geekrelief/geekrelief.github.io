@@ -22,49 +22,6 @@
 
 <script type="text/javascript" src="dochack.js"></script>
 
-<script type="text/javascript">
-function main() {
-  var pragmaDots = document.getElementsByClassName("pragmadots");
-  for (var i = 0; i < pragmaDots.length; i++) {
-    pragmaDots[i].onclick = function(event) {
-      // Hide tease
-      event.target.parentNode.style.display = "none";
-      // Show actual
-      event.target.parentNode.nextElementSibling.style.display = "inline";
-    }
-  }
-
-  function switchTheme(e) {
-      if (e.target.checked) {
-          document.documentElement.setAttribute('data-theme', 'dark');
-          localStorage.setItem('theme', 'dark');
-      } else {
-          document.documentElement.setAttribute('data-theme', 'light');
-          localStorage.setItem('theme', 'light');
-      }
-  }
-
-  const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
-  if (toggleSwitch !== null) {
-    toggleSwitch.addEventListener('change', switchTheme, false);
-  }
-
-  var currentTheme = localStorage.getItem('theme');
-  if (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    currentTheme = 'dark';
-  }
-  if (currentTheme) {
-    document.documentElement.setAttribute('data-theme', currentTheme);
-
-    if (currentTheme === 'dark' && toggleSwitch !== null) {
-      toggleSwitch.checked = true;
-    }
-  }
-}
-
-window.addEventListener('DOMContentLoaded', main);
-</script>
-
 </head>
 <body>
 <div class="document" id="documentId">
@@ -106,7 +63,8 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference" id="rules-rename-it_toc" href="#rules-rename-it">Rename <tt class="docutils literal"><span class="pre">it</span></tt></a></li>
 <li><a class="reference" id="rules-tuple-arguments_toc" href="#rules-tuple-arguments">Tuple Arguments</a></li>
 <li><a class="reference" id="rules-stringify_toc" href="#rules-stringify">Stringify</a></li>
-<li><a class="reference" id="rules-capitalize_toc" href="#rules-capitalize">Capitalize</a></li>
+<li><a class="reference" id="rules-lowercase_toc" href="#rules-lowercase">Lowercase</a></li>
+<li><a class="reference" id="rules-uppercase-slash-capitalize_toc" href="#rules-uppercase-slash-capitalize">Uppercase / Capitalize</a></li>
 <li><a class="reference" id="rules-expansion_toc" href="#rules-expansion">Expansion</a></li>
 <li><a class="reference" id="rules-type-fields_toc" href="#rules-type-fields">Type Fields</a></li>
 <li><a class="reference" id="rules-multiple-statements-and-nesting_toc" href="#rules-multiple-statements-and-nesting">Multiple Statements and Nesting</a></li>
@@ -148,7 +106,7 @@ window.addEventListener('DOMContentLoaded', main);
   
   <p class="module-desc"><table class="docinfo" frame="void" rules="none"><col class="docinfo-name" /><col class="docinfo-content" /><tbody valign="top"><tr><th class="docinfo-name">Author:</th><td>Don-Duong Quach</td></tr>
 <tr><th class="docinfo-name">License:</th><td>MIT</td></tr>
-<tr><th class="docinfo-name">Version:</th><td>0.13.0</td></tr>
+<tr><th class="docinfo-name">Version:</th><td>0.14.1</td></tr>
 </tbody></table><p><a class="reference external" href="https://github.com/geekrelief/genit/">Source</a></p>
 <p>This module has a macro <tt class="docutils literal"><span class="pre">gen</span></tt> which implements a small DSL for inline code generation. <tt class="docutils literal"><span class="pre">gen</span></tt> acts like an anonymous, dirty, template/macro for generating lots of similar repetitive code.</p>
 <p>Arguments are subsituted into a body of code using the following rules.</p>
@@ -278,7 +236,17 @@ doAssert dComp == 3
                            <span class="Comment">#   ageLabel = &quot;ageLabel&quot;</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">nameLabel</span> <span class="Operator">==</span> <span class="StringLit">&quot;nameLabel&quot;</span>
 <span class="Identifier">doAssert</span> <span class="Identifier">ageLabel</span> <span class="Operator">==</span> <span class="StringLit">&quot;ageLabel&quot;</span></pre>
-<h2><a class="toc-backref" id="rules-capitalize" href="#rules-capitalize">Capitalize</a></h2><p>The <tt class="docutils literal"><span class="pre">^</span></tt> operator will capitalize the first letter of an identifier.</p>
+<h2><a class="toc-backref" id="rules-lowercase" href="#rules-lowercase">Lowercase</a></h2><p>The <tt class="docutils literal"><span class="pre">-</span></tt> operator will lowercase the first letter of an identifier.</p>
+
+<p><strong class="examples_text">Example:</strong></p>
+<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
+<span class="Identifier">gen</span> <span class="Identifier">Red</span><span class="Punctuation">,</span> <span class="Identifier">Green</span><span class="Punctuation">,</span> <span class="Identifier">Blue</span><span class="Punctuation">:</span>
+  <span class="Keyword">var</span> <span class="Punctuation">`</span><span class="Operator">-</span><span class="Identifier">it</span><span class="Punctuation">`</span> <span class="Operator">=</span> <span class="Operator">$$</span><span class="Identifier">it</span>
+
+<span class="Identifier">doAssert</span> <span class="Identifier">red</span> <span class="Operator">==</span> <span class="StringLit">&quot;Red&quot;</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">green</span> <span class="Operator">==</span> <span class="StringLit">&quot;Green&quot;</span>
+<span class="Identifier">doAssert</span> <span class="Identifier">blue</span> <span class="Operator">==</span> <span class="StringLit">&quot;Blue&quot;</span></pre>
+<h2><a class="toc-backref" id="rules-uppercase-slash-capitalize" href="#rules-uppercase-slash-capitalize">Uppercase / Capitalize</a></h2><p>The <tt class="docutils literal"><span class="pre">^</span></tt> operator will uppercase / capitalize the first letter of an identifier.</p>
 
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">src</span><span class="Operator">/</span><span class="Identifier">genit</span>
@@ -495,7 +463,7 @@ This will print out what <tt class="docutils literal"><span class="pre"><span cl
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-04 05:57:16 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-06-21 17:19:22 UTC</small>
       </div>
     </div>
   </div>
